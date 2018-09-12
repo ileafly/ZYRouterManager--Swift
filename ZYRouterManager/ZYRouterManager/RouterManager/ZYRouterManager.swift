@@ -1,21 +1,30 @@
-# ZYRouterManager--Swift
-封装一个简易、灵活的路由中间件，适合小型项目使用--Swift版
+//
+//  ZYRouterManager.swift
+//  ZYRouterManager
+//
+//  Created by luzhiyong on 2018/9/12.
+//  Copyright © 2018年 ilealfy. All rights reserved.
+//
 
-## 目的
+/*
+ * ZYRouterManager
+ * 路由层解决的核心问题就是原来界面或者组件之间互相调用都必须互相依赖，需要清楚目标对象的逻辑，而且OC版需要导入目标的头文件
+ * 通过路由中间件中转，只需要依赖路由或某种通讯协议，路由的核心逻辑就是目标匹配
+ * 对于调用者来说，只需要传入对于的URL或路由规则即可
+ */
 
-随着项目越来越大，页面之间的跳转逻辑也越来越复杂，加上有很多h5页面也存在着与原生页面跳转的逻辑，为了统一管理页面的跳转逻辑，封装了一个路由中间件的类
+import UIKit
 
-## 预期
+let RootScheme = "router" // 主scheme 所有的路由跳转都要遵循这个格式
 
-提供一个类方法，解析传入的路径，跳转到相应的界面
+enum RouterPath: String {
+    case detailPath = "detail"
+    case searchPath = "search"
+}
 
-## 实现方案
+class ZYRouterManager: NSObject {
 
-###### 提供一个统一的路由中间件入口
-
-提供了一个唯一对外开放的类方法，需要传入跳转的scheme。
-
-```
+    
     /// 路由中间件入口方法
     ///
     /// - Parameter schema: 需要跳转的scheme
@@ -32,13 +41,8 @@
         
         return false
     }
-```
-
-###### 分析传入的scheme
-
-分析传入的scheme，通过对比host判断跳转路径，通过解析请求参数，将传递的参数赋值给相对应的controller。
-
-```
+    
+    
     /// 分析传入的scheme
     ///
     /// - Parameter url: 跳转的URL对象
@@ -90,14 +94,9 @@
         }
         return false
     }
-```
-
-###### 获取当前控制器
-
-为了方便使用者调用，`ZYRouterManager`内部实现了获取当前控制器的流程，大体思路是通过rootViewController一步一步向下查找，一直找到`UIViewController`对象，作为当前控制器返回
-
-```
-/// 获取当前控制器
+    
+    
+    /// 获取当前控制器
     ///
     /// - Returns: 当前控制器
     private class func getCurrentVC() -> UIViewController? {
@@ -129,9 +128,5 @@
         }
         return parentVC
     }
-```
-
-## 思路扩展
-
-这里路由控制器的实现还是比较简单的，主要就是通过对比host判断加载对应的controller。比较适合中小型项目的使用，如果项目是组件化搭建的，应用场景相对更复杂，目前相关比较好的库是[JLRoutes](https://github.com/joeldev/JLRoutes)。
-[JLRoutes](https://github.com/joeldev/JLRoutes)的主要实现思路是在启动时注册一组跳转map，当传递了对应的scheme后就会触发相应的block方法，在block中实现具体的跳转逻辑。
+    
+}
